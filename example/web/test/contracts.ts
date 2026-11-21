@@ -1,11 +1,11 @@
-import { mountEditor } from "../../packages/browser/src/index.js";
-import { attachEditor } from "../../packages/browser/src/editor.js";
+import { mountEditor } from "../../../packages/browser/src/index.js";
+import { attachEditor } from "../../../packages/browser/src/editor.js";
 import {
   type DocumentSelection,
   EditCommand,
   loadMarkdown,
-} from "../../packages/browser/src/markdown.js";
-import { renderEditableDocument } from "../../packages/browser/src/rich-text.js";
+} from "../../../packages/browser/src/markdown.js";
+import { renderEditableDocument } from "../../../packages/browser/src/rich-text.js";
 
 type Markdown = Awaited<ReturnType<typeof loadMarkdown>>;
 type State = ReturnType<Markdown["current"]>;

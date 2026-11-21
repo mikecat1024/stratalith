@@ -1,4 +1,4 @@
-import { mountEditor } from "../packages/browser/src/index.js";
+import { mountEditor } from "../../packages/browser/src/index.js";
 
 const editor = document.querySelector("#editor");
 const status = document.querySelector("#status");

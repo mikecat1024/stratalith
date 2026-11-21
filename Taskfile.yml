@@ -1,6 +1,28 @@
 version: '3'
 
 tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  test:
+    desc: Run the Rust workspace tests
+    cmds:
+      - cargo nextest run --locked --workspace
+      - cargo test --locked --workspace --doc
+
+  web:build:
+    desc: Build the WebAssembly editor and browser assets
+    cmds:
+      - ./example/web/build.sh
+
+  web:run:
+    desc: Build and serve the web editor at http://localhost:8080
+    deps: [web:build]
+    cmds:
+      - python3 -m http.server 8080 --bind 127.0.0.1 --directory target/example
+
   gpui:run:
     desc: Run the native GPUI Markdown editor
     cmds:

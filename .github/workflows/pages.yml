@@ -3,6 +3,19 @@ name: Deploy editor to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'example/web/**'
+      - '!example/web/test/**'
+      - '!example/web/tsconfig.json'
+      - 'packages/browser/src/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/stratalith-wasm/**'
+      - 'crates/stratalith-core/**'
+      - 'crates/stratalith-markdown/**'
+      - '!crates/**/tests/**'
+      - '!crates/**/benches/**'
   workflow_dispatch:
 
 permissions:
@@ -17,7 +30,7 @@ jobs:
         with:
           node-version: 24
       - run: rustup target add wasm32-unknown-unknown
-      - run: ./example/build.sh
+      - run: ./example/web/build.sh
       - uses: actions/upload-pages-artifact@v5
         with:
           path: target/example
