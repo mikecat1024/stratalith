@@ -16,6 +16,8 @@ use text::BlockText;
 
 const PLACEHOLDER: &str =
     "Start typing. Type # followed by a space for a heading, or **text** for bold.";
+const BODY_SIZE: f32 = 16.;
+const LINE_HEIGHT: f32 = 1.65;
 
 struct Editor {
     engine: EditorEngine,
@@ -383,6 +385,7 @@ impl Editor {
     fn block(
         &mut self,
         id: NodeId,
+        list_depth: usize,
         next: &mut usize,
         selection: &Range<usize>,
         foreground: Hsla,
@@ -405,7 +408,8 @@ impl Editor {
                         let font_size = [32., 24., 18.72, 16., 13.28, 10.72][*level as usize];
                         frame = frame
                             .text_size(px(font_size))
-                            .line_height(px(font_size * 1.75))
+                            .line_height(px(font_size * LINE_HEIGHT))
+                            .when(*level as usize == 0, |s| s.mb(px(32. * 0.67 - 16.)))
                             .font_weight(FontWeight::BOLD);
                     }
                     BlockKind::CodeBlock { .. } => {
@@ -436,22 +440,53 @@ impl Editor {
                     }
                     BlockKind::List { kind, tight } => {
                         list = Some(*kind);
-                        frame = frame.pl_5().when(*tight, |s| s.gap_0());
+                        frame = frame.when(*tight, |s| s.gap_0());
+                    }
+                    BlockKind::ListItem => {
+                        let parent = node.parent().and_then(|id| doc.node(id));
+                        if matches!(
+                            parent.map(|n| n.kind()),
+                            Some(NodeKind::Block(BlockKind::List { tight: true, .. }))
+                        ) {
+                            frame = frame.gap_0();
+                        }
                     }
                     _ => (),
                 }
                 let children = node.children().to_vec();
                 for (i, child) in children.into_iter().enumerate() {
-                    let body = self.block(child, next, selection, foreground, window);
+                    let body = self.block(
+                        child,
+                        list_depth + usize::from(list.is_some()),
+                        next,
+                        selection,
+                        foreground,
+                        window,
+                    );
                     frame = frame.child(if let Some(kind) = list {
-                        let bullet = match kind {
-                            ListKind::Bullet => "•".into(),
-                            ListKind::Ordered { start } => format!("{}.", start as usize + i),
+                        let marker = div()
+                            .flex()
+                            .justify_end()
+                            .items_center()
+                            .min_w(px(40.))
+                            .h(px(BODY_SIZE * LINE_HEIGHT));
+                        let marker = match kind {
+                            ListKind::Bullet => {
+                                let shape = div().size(px(5.));
+                                let shape = match list_depth {
+                                    0 => shape.rounded_full().bg(foreground),
+                                    1 => shape.rounded_full().border_1().border_color(foreground),
+                                    _ => shape.bg(foreground),
+                                };
+                                marker.pr(px(12.)).child(shape)
+                            }
+                            ListKind::Ordered { start } => {
+                                marker.pr(px(5.)).child(format!("{}.", start as usize + i))
+                            }
                         };
                         div()
                             .flex()
-                            .gap_2()
-                            .child(bullet)
+                            .child(marker)
                             .child(div().flex_1().min_w_0().child(body))
                     } else {
                         body
@@ -483,7 +518,7 @@ impl Render for Editor {
         let mut next = 0;
         let selection = self.selected_bytes();
         for id in self.engine.document().blocks().to_vec() {
-            column = column.child(self.block(id, &mut next, &selection, foreground, window));
+            column = column.child(self.block(id, 0, &mut next, &selection, foreground, window));
         }
         self.reveal = false;
         let entity = cx.entity();
@@ -497,8 +532,8 @@ impl Render for Editor {
             .px_5()
             .bg(if dark { black() } else { white() })
             .text_color(foreground)
-            .text_size(px(16.))
-            .line_height(px(28.))
+            .text_size(px(BODY_SIZE))
+            .line_height(px(BODY_SIZE * LINE_HEIGHT))
             .cursor_text()
             .track_focus(&self.focus)
             .on_key_down(cx.listener(Self::key))

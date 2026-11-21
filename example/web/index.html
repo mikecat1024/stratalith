@@ -2,37 +2,57 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Stratalith Editor</title>
+<title>Stratalith · Markdown editor</title>
 <style>
-  :root { color-scheme: light dark; font-family: Inter, system-ui, sans-serif; }
-  body { margin: 0; }
-  main { --gutter: max(1.25rem, calc((100% - 42rem) / 2)); }
-  #editor {
-    box-sizing: border-box;
-    min-height: 100dvh;
-    padding-block: clamp(1.5rem, 6vh, 4rem);
-    padding-inline: var(--gutter);
-    line-height: 1.75;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-    outline-offset: -2px;
-  }
-  #status { margin: 0; padding: 1rem var(--gutter); }
-  #editor[contenteditable="true"]:has(> p:only-child > br:only-child)::before { position: absolute; content: attr(data-placeholder); color: GrayText; pointer-events: none; }
+  :root { color-scheme: light dark; font-family: Inter, system-ui, sans-serif; --line: color-mix(in srgb, CanvasText 18%, Canvas); --tint: color-mix(in srgb, CanvasText 4%, Canvas); }
+  * { box-sizing: border-box; }
+  body { max-width: 76rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+  header, .panes { display: flex; }
+  header { align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+  header h1 { margin: 0; font-size: 1.35rem; letter-spacing: -.04em; }
+  header a { color: inherit; text-underline-offset: .2em; }
+  .hint { line-height: 1.5; margin-block: 1.5rem; }
+  kbd { border: 1px solid var(--line); border-radius: .3em; padding: .1em .35em; }
+  .panes { border: 1px solid var(--line); border-radius: .65rem; overflow: hidden; }
+  section { flex: 1; min-width: 0; padding: clamp(1rem, 3vw, 2rem); }
+  section + section { background: var(--tint); border-inline-start: 1px solid var(--line); }
+  h2 { margin: 0 0 1.5rem; font-size: .82rem; letter-spacing: .04em; }
+  #editor, #source { white-space: pre-wrap; overflow-wrap: anywhere; }
+  #source { margin: 0; font: .95rem/1.65 ui-monospace, monospace; tab-size: 4; }
+  #editor { min-height: 18rem; line-height: 1.65; }
+  #editor:focus { outline: none; }
+  section:has(#editor:focus-visible) { box-shadow: inset 0 0 0 2px Highlight; }
   #editor > :first-child { margin-top: 0; }
   #editor > :last-child { margin-bottom: 0; }
-  #editor blockquote { margin-inline: 0; border-inline-start: .2rem solid GrayText; padding-inline-start: 1rem; }
-  #editor code, #editor pre { background: color-mix(in srgb, CanvasText 8%, Canvas); border-radius: .2rem; }
+  #editor blockquote { margin-inline: 0; border-inline-start: .2rem solid var(--line); padding-inline-start: 1rem; }
+  #editor code, #editor pre { background: var(--tint); border-radius: .2rem; }
   #editor code { padding: .1em .25em; }
   #editor pre { padding: .75rem; tab-size: 4; white-space: pre-wrap; }
-  #editor a { color: LinkText; text-decoration: underline; }
   #editor img { max-width: 100%; }
   #editor [data-tight="true"] > li > p { margin-block: 0; }
+  @media (max-width: 42rem) {
+    .panes { flex-direction: column; }
+    section + section { border-inline-start: 0; border-top: 1px solid var(--line); }
+    #editor { min-height: 6rem; }
+  }
 </style>
+<header>
+  <h1>Stratalith</h1>
+  <a href="https://github.com/mikecat1024/stratalith">View on GitHub</a>
+</header>
 <main>
-  <p id="status" role="status">Loading…</p>
-  <div id="editor" role="textbox" aria-label="Visual editor" aria-multiline="true"
-       data-placeholder="Start typing. Type # followed by a space for a heading, or **text** for bold."></div>
+  <p class="hint">Place the cursor in “Pack a camera” and press <kbd>Tab</kbd> to nest it. Watch the Markdown change as you edit.</p>
+  <p id="status" role="status">Loading editor…</p>
+  <div class="panes">
+    <section>
+      <h2 id="editor-label">Visual editor</h2>
+      <div id="editor" role="textbox" aria-labelledby="editor-label" aria-multiline="true"></div>
+    </section>
+    <section>
+      <h2 id="source-label">Markdown</h2>
+      <pre id="source" aria-labelledby="source-label"></pre>
+    </section>
+  </div>
 </main>
 <script type="module" src="./example/web/main.js"></script>
 </html>
