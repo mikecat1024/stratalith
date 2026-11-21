@@ -1,0 +1,15 @@
+[package]
+name = "stratalith-markdown"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+stratalith-core.workspace = true
+
+[dev-dependencies]
+stratalith-macros.workspace = true
+
+[[bench]]
+name = "markdown"
+harness = false

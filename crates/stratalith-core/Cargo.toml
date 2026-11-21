@@ -1,0 +1,8 @@
+[package]
+name = "stratalith-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dev-dependencies]
+stratalith-macros.workspace = true

@@ -1,0 +1,12 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+stratalith-core = { path = "crates/stratalith-core" }
+stratalith-macros = { path = "crates/stratalith-macros" }
+stratalith-markdown = { path = "crates/stratalith-markdown" }

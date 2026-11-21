@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stratalith Editor</title>
+<style>
+  :root { color-scheme: light dark; font-family: Inter, system-ui, sans-serif; }
+  body { margin: 0; }
+  main { --gutter: max(1.25rem, calc((100% - 42rem) / 2)); }
+  #editor {
+    box-sizing: border-box;
+    min-height: 100dvh;
+    padding-block: clamp(1.5rem, 6vh, 4rem);
+    padding-inline: var(--gutter);
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    outline-offset: -2px;
+  }
+  #status { margin: 0; padding: 1rem var(--gutter); }
+  #editor[contenteditable="true"]:has(> p:only-child > br:only-child)::before { position: absolute; content: attr(data-placeholder); color: GrayText; pointer-events: none; }
+  #editor > :first-child { margin-top: 0; }
+  #editor > :last-child { margin-bottom: 0; }
+  #editor blockquote { margin-inline: 0; border-inline-start: .2rem solid GrayText; padding-inline-start: 1rem; }
+  #editor code, #editor pre { background: color-mix(in srgb, CanvasText 8%, Canvas); border-radius: .2rem; }
+  #editor code { padding: .1em .25em; }
+  #editor pre { padding: .75rem; tab-size: 4; white-space: pre-wrap; }
+  #editor a { color: LinkText; text-decoration: underline; }
+  #editor img { max-width: 100%; }
+  #editor [data-tight="true"] > li > p { margin-block: 0; }
+</style>
+<main>
+  <p id="status" role="status">読み込み中…</p>
+  <div id="editor" role="textbox" aria-label="ビジュアルエディター" aria-multiline="true"
+       data-placeholder="ここに入力。# と空白で見出し、**文字** で太字"></div>
+</main>
+<script type="module" src="./main.js"></script>
+</html>
