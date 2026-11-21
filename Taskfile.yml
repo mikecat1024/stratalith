@@ -6,6 +6,12 @@ tasks:
     cmds:
       - task --list
 
+  clean:
+    desc: Remove build artifacts for the root workspace and GPUI example
+    cmds:
+      - cargo clean
+      - cargo clean --manifest-path example/gpui/Cargo.toml
+
   test:
     desc: Run the Rust workspace tests
     cmds:
