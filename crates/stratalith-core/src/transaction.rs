@@ -187,7 +187,7 @@ impl std::error::Error for EditError {}
 /// let mut doc = document([paragraph([])])?;
 /// let at = BlockPosition { block: doc.blocks()[0], offset: 0, affinity: Affinity::Downstream };
 /// let before = BeforeEditPosition::new(at);
-/// let tx = Transaction::new([Edit::InsertText { at, text: "日😀".into() }]);
+/// let tx = Transaction::new([Edit::InsertText { at, text: "c😀".into() }]);
 ///
 /// let (changes, selection) = tx.apply(&mut doc, Selection { anchor: at, focus: at })?;
 ///
@@ -195,7 +195,7 @@ impl std::error::Error for EditError {}
 /// assert_eq!(children.len(), 1);
 /// assert_eq!(
 ///     doc.node(children[0]).unwrap().kind(),
-///     &NodeKind::Inline(InlineKind::Text("日😀".into())),
+///     &NodeKind::Inline(InlineKind::Text("c😀".into())),
 /// );
 /// assert_eq!(selection.focus.offset, 2);
 /// assert_eq!(changes.get_position_after_edits(before).into_position().offset, 2);
@@ -274,7 +274,7 @@ mod tests {
     ) -> BlockBuilder<'a> {
         paragraph([strong([
             text("Hello ").capture(hello),
-            emphasis([text("世界😀").capture(world)]),
+            emphasis([text("go😀").capture(world)]),
         ])])
     }
 
@@ -295,8 +295,8 @@ mod tests {
     #[test]
     fn insertion_uses_affinity_at_nested_boundary() {
         for (affinity, hello_after, world_after) in [
-            (Affinity::Upstream, "Hello !", "世界😀"),
-            (Affinity::Downstream, "Hello ", "!世界😀"),
+            (Affinity::Upstream, "Hello !", "go😀"),
+            (Affinity::Downstream, "Hello ", "!go😀"),
         ] {
             let (mut doc, block, hello, world) = nested();
             let at = BlockPosition {
@@ -368,8 +368,8 @@ mod tests {
         );
         assert_eq!(doc.node(suffix).unwrap().parent(), Some(emphasis));
         assert_text(&doc, hello, "Hello ");
-        assert_text(&doc, world, "世");
-        assert_text(&doc, suffix, "界😀");
+        assert_text(&doc, world, "g");
+        assert_text(&doc, suffix, "o😀");
         assert_eq!((after.anchor, after.focus), (upstream, pos(right, 0)));
         assert_eq!(mapped.into_position(), pos(right, 2));
     }
@@ -380,8 +380,8 @@ mod tests {
         let mut doc = document([block(
             BlockKind::BlockQuote,
             [
-                paragraph([text("日").capture(&mut first)]).capture(&mut left),
-                paragraph([text("本").capture(&mut second)]).capture(&mut right),
+                paragraph([text("c").capture(&mut first)]).capture(&mut left),
+                paragraph([text("a").capture(&mut second)]).capture(&mut right),
             ],
         )])
         .unwrap();
@@ -391,13 +391,13 @@ mod tests {
             Edit::JoinParagraphs { left, right },
             Edit::InsertText {
                 at: pos(left, 2),
-                text: "語".into(),
+                text: "t".into(),
             },
         ]);
 
         let (_, after) = tx.apply(&mut doc, caret(pos(right, 1))).unwrap();
 
-        assert_text(&doc, first.unwrap(), "日本語");
+        assert_text(&doc, first.unwrap(), "cat");
         assert!(doc.node(second.unwrap()).is_none());
         assert_eq!(doc.node(quote).unwrap().children(), &[left]);
         assert_eq!(after.focus, pos(left, 3));
@@ -467,7 +467,7 @@ mod tests {
             Err(EditError::Position(PositionError::OffsetOutOfBounds { .. }))
         ));
         assert_eq!(doc.blocks(), &[block]);
-        assert_text(&doc, world, "世界😀");
+        assert_text(&doc, world, "go😀");
         assert_eq!(
             doc.insert_block(1, BlockKind::Paragraph),
             control.insert_block(1, BlockKind::Paragraph)
@@ -484,7 +484,7 @@ mod tests {
                     url: "a.png".into(),
                     title: None,
                 },
-                [text("説明").capture(&mut description)],
+                [text("Description").capture(&mut description)],
             )
             .capture(&mut image),
             text("b").capture(&mut right),
@@ -516,6 +516,6 @@ mod tests {
         assert!(doc.node(block).unwrap().children().is_empty());
         assert_eq!(doc.node(after.focus.block).unwrap().children(), &[bold]);
         assert_eq!(doc.node(bold).unwrap().parent(), Some(after.focus.block));
-        assert_text(&doc, world, "世界😀");
+        assert_text(&doc, world, "go😀");
     }
 }

@@ -38,11 +38,11 @@ fn restore(#[case] input: &str, #[case] expected: &str) {
 // Expected output markers also check the selection after each command.
 #[rstest]
 #[case::insert_in_quoted_heading(
-    "> # 日😀$$本",
+    "> # €😀$$t",
     vec![(
-        Command::InsertText("語".into()),
+        Command::InsertText("s".into()),
         "
-            > # 日😀語本
+            > # €😀st
         "
     )]
 )]
@@ -100,36 +100,36 @@ fn restore(#[case] input: &str, #[case] expected: &str) {
     )]
 )]
 #[case::hard_break_replaces_backward_range(
-    "日|]本[|語",
+    "€|]t[|s",
     vec![(
         Command::InsertHardBreak,
         r"
-            日\
-            語
+            €\
+            s
         "
     )]
 )]
 #[case::hard_break_inside_emphasis(
-    "*日$$語*",
+    "*€$$s*",
     vec![(
         Command::InsertHardBreak,
         r"
-            *日\
-            語*
+            *€\
+            s*
         "
     )]
 )]
 #[case::enter_in_code_block(
     "
         ```
-        日$$語
+        €$$s
         ```",
     vec![(
         Command::Enter,
         "
             ```
-            日
-            語
+            €
+            s
             ```
         "
     )]

@@ -31,9 +31,9 @@ pub fn serialize(doc: &Document) -> Result<String, MarkdownError> {
 /// ```
 /// use stratalith_markdown::{parse, serialize_fragment};
 ///
-/// let fragment = parse("😀**重**").unwrap();
+/// let fragment = parse("😀**O**").unwrap();
 ///
-/// assert_eq!(serialize_fragment(&fragment).unwrap(), "😀**重**");
+/// assert_eq!(serialize_fragment(&fragment).unwrap(), "😀**O**");
 /// ```
 pub fn serialize_fragment(doc: &Document) -> Result<String, MarkdownError> {
     Renderer(doc).blocks(doc.blocks(), "\n\n", 0)
@@ -217,10 +217,10 @@ mod tests {
     }
 
     #[stratalith_macros::rstest]
-    #[case::ordered_list_marker_and_cjk("1. 日誌")]
+    #[case::ordered_list_marker_and_cjk("1. \u{4e00}\u{4e8c}")]
     #[case::leading_spaces("  leading")]
     #[case::trailing_spaces("trailing  ")]
-    #[case::emphasis_markers_and_cjk("*強調*")]
+    #[case::emphasis_markers_and_cjk("*\u{4e00}\u{4e8c}*")]
     #[case::emoji_and_backslash("😀\\x")]
     fn splitting_editor_text_nodes_does_not_change_markdown(#[case] value: &str) {
         let whole = document([paragraph([text(value)])]).unwrap();

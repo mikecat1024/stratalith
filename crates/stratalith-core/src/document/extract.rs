@@ -9,13 +9,13 @@ impl Document {
     ///
     /// # Examples
     ///
-    /// Selecting backwards from after 重 to before 😀 keeps the bold formatting on 重.
+    /// Selecting backwards from after O to before 😀 keeps the bold formatting on O.
     ///
     /// ```
     /// use stratalith_core::builder::{document, paragraph, strong, text};
     /// use stratalith_core::{Affinity, BlockPosition, Node, Selection};
     ///
-    /// let doc = document([paragraph([text("A😀"), strong([text("重要")])])]).unwrap();
+    /// let doc = document([paragraph([text("A😀"), strong([text("OK")])])]).unwrap();
     /// let anchor = BlockPosition {
     ///     block: doc.blocks()[0], offset: 3, affinity: Affinity::Downstream,
     /// };
@@ -23,7 +23,7 @@ impl Document {
     ///
     /// let selected = doc.extract(Selection { anchor, focus }).unwrap();
     ///
-    /// let expected = document([paragraph([text("😀"), strong([text("重")])])]).unwrap();
+    /// let expected = document([paragraph([text("😀"), strong([text("O")])])]).unwrap();
     /// assert!(selected.nodes().map(Node::kind).eq(expected.nodes().map(Node::kind)));
     /// ```
     pub fn extract(&self, selection: Selection) -> Result<Document, PositionError> {

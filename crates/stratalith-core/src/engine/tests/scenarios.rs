@@ -2206,7 +2206,7 @@ fn web_link<'a>(
     Scenario::new([paragraph([])]),
     {
         // ```markdown
-        // **日😀**tail$$
+        // **€😀**tail$$
         // ```
         let tail = "tail"
             .char_indices()
@@ -2215,7 +2215,7 @@ fn web_link<'a>(
                 let prefix = &"tail"[..start + character.len_utf8()];
                 (
                     Command::InsertText(character.to_string()),
-                    Scenario::new([paragraph([strong([text("日😀")]), text(prefix)])]).at(&[0], 3 + index)
+                    Scenario::new([paragraph([strong([text("€😀")]), text(prefix)])]).at(&[0], 3 + index)
                         .with_caret_affinity(Affinity::Upstream),
                 )
             });
@@ -2237,27 +2237,27 @@ fn web_link<'a>(
                     .with_caret_affinity(Affinity::Upstream),
             ),
             (
-                Command::InsertText("日😀".into()),
+                Command::InsertText("€😀".into()),
                 // ```markdown
-                // \*\*日😀$$
+                // \*\*€😀$$
                 // ```
-                Scenario::new([paragraph([text("**日😀")])]).at(&[0], 4)
+                Scenario::new([paragraph([text("**€😀")])]).at(&[0], 4)
                     .with_caret_affinity(Affinity::Upstream),
             ),
             (
                 Command::InsertText("*".into()),
                 // ```markdown
-                // \*\*日😀\*$$
+                // \*\*€😀\*$$
                 // ```
-                Scenario::new([paragraph([text("**日😀*")])]).at(&[0], 5)
+                Scenario::new([paragraph([text("**€😀*")])]).at(&[0], 5)
                     .with_caret_affinity(Affinity::Upstream),
             ),
             (
                 Command::InsertText("*".into()),
                 // ```markdown
-                // **日😀**$$
+                // **€😀**$$
                 // ```
-                Scenario::new([paragraph([strong([text("日😀")])])]).at(&[0], 2),
+                Scenario::new([paragraph([strong([text("€😀")])])]).at(&[0], 2),
             ),
         ]
         .into_iter()
@@ -3540,15 +3540,15 @@ fn web_link<'a>(
     )],
 )]
 #[case::hard_break_exits_code_and_types_before_suffix(
-    Scenario::new([rust_code("あ😀b")]).at(&[0], 1),
+    Scenario::new([rust_code("€😀b")]).at(&[0], 1),
     [
         (
             Command::InsertHardBreak,
-            Scenario::new([rust_code("あ"), paragraph([text("😀b")])]).at(&[1], 0),
+            Scenario::new([rust_code("€"), paragraph([text("😀b")])]).at(&[1], 0),
         ),
         (
             Command::InsertText("X".into()),
-            Scenario::new([rust_code("あ"), paragraph([text("X😀b")])])
+            Scenario::new([rust_code("€"), paragraph([text("X😀b")])])
                 .at(&[1], 1)
                 .with_caret_affinity(Affinity::Upstream),
         ),

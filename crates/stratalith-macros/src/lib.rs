@@ -8,7 +8,7 @@ use proc_macro::{Delimiter, Group, Ident, TokenStream, TokenTree};
 ///
 /// #[rstest]
 /// #[case::empty("", 0)]
-/// #[case::unicode("日本", 2)]
+/// #[case::unicode("aé", 2)]
 /// fn character_count(#[case] text: &str, #[case] expected: usize) {
 ///     let count = text.chars().count();
 ///

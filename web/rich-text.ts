@@ -149,7 +149,7 @@ function renderNode(node: MarkdownNode): Node {
       return image;
     }
     default:
-      throw new Error("Wasm から不正な文書データを受け取りました");
+      throw new Error("Received invalid document data from Wasm");
   }
 }
 

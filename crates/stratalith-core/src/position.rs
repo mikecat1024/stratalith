@@ -96,7 +96,7 @@ impl BlockPosition {
     ///
     /// let mut hard_break = None;
     /// let doc = document([paragraph([
-    ///     text("日😀"),
+    ///     text("€😀"),
     ///     inline(InlineKind::HardBreak, []).capture(&mut hard_break),
     /// ])]).unwrap();
     ///
@@ -204,8 +204,8 @@ mod tests {
     fn nested() -> (Document, NodeId, NodeId, NodeId) {
         let (mut left, mut right) = (None, None);
         let doc = document([paragraph([
-            text("日😀").capture(&mut left),
-            strong([emphasis([text("e\u{301}語").capture(&mut right)])]),
+            text("€😀").capture(&mut left),
+            strong([emphasis([text("e\u{301}s").capture(&mut right)])]),
         ])])
         .unwrap();
         let block = doc.blocks()[0];
@@ -324,7 +324,7 @@ mod tests {
         let doc = document([block(
             BlockKind::CodeBlock {
                 language: None,
-                code: "日😀".into(),
+                code: "€😀".into(),
             },
             [],
         )])
@@ -397,7 +397,7 @@ mod tests {
         let doc = document([paragraph([
             text("a"),
             text(""),
-            text("日").capture(&mut next),
+            text("€").capture(&mut next),
         ])])
         .unwrap();
         let block = doc.blocks()[0];

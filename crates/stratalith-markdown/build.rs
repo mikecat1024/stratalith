@@ -3,7 +3,7 @@ use std::{env, fmt::Write, fs, path::PathBuf};
 
 const INLINE_PARTS: &[(&str, &str)] = &[
     ("word", "word"),
-    ("cjk", "日"),
+    ("cjk", "\u{4e00}"),
     ("space", " "),
     ("punctuation", ". "),
     ("asterisk_emphasis", "*a*"),

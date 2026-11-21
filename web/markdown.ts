@@ -78,7 +78,7 @@ class TreeReader {
   private string() {
     const value = this.optionalString();
     if (value === null) {
-      throw new Error("Wasm から不正な文書データを受け取りました");
+      throw new Error("Received invalid document data from Wasm");
     }
     return value;
   }
@@ -128,7 +128,7 @@ class TreeReader {
     for (let index = 0; index < count; index++) {
       const kind = kinds[this.byte()];
       if (kind === undefined) {
-        throw new Error("Wasm から不正な文書データを受け取りました");
+        throw new Error("Received invalid document data from Wasm");
       }
       result.push(this.node(kind));
     }
@@ -205,7 +205,7 @@ export async function loadMarkdown() {
   });
   const api = instance.exports;
   if (!isMarkdownApi(api)) {
-    throw new Error("Wasm API を読み込めません");
+    throw new Error("Could not load the Wasm API");
   }
 
   const convert = (input: Uint8Array, run: () => number) => {

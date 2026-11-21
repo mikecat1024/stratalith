@@ -181,14 +181,14 @@ mod tests {
 
     #[test]
     fn extracts_backward_range_in_source_bytes() {
-        let input = "**日|]😀[|本**";
+        let input = "**€|]😀[|t**";
 
         let (source, selection) = extract_markers(input);
 
-        assert_eq!(source, "**日😀本**");
+        assert_eq!(source, "**€😀t**");
         let SourceSelection::Range { anchor, focus } = selection else {
             panic!("expected a range");
         };
-        assert_eq!((anchor, focus), ("**日😀".len(), "**日".len()));
+        assert_eq!((anchor, focus), ("**€😀".len(), "**€".len()));
     }
 }

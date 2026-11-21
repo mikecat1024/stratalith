@@ -16,7 +16,7 @@ fn median_per_call(iterations: u32, mut run: impl FnMut()) -> Duration {
 }
 
 fn main() {
-    let prose = "A paragraph with several words and 日本語. ".repeat(2400);
+    let prose = "A paragraph with several words and a café. ".repeat(2400);
     let mixed = "# Heading\n\n- **bold** with [link](a)\n- `code` and *emphasis*\n\n".repeat(300);
     let unmatched: String = (1..=540).map(|n| format!("x{}", "`".repeat(n))).collect();
 

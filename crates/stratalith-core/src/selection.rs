@@ -104,8 +104,8 @@ mod tests {
     fn nested() -> (Document, NodeId, NodeId, NodeId) {
         let (mut left, mut right) = (None, None);
         let doc = document([paragraph([
-            text("日😀").capture(&mut left),
-            strong([emphasis([text("e\u{301}語").capture(&mut right)])]),
+            text("€😀").capture(&mut left),
+            strong([emphasis([text("e\u{301}s").capture(&mut right)])]),
         ])])
         .unwrap();
         let block = doc.blocks()[0];

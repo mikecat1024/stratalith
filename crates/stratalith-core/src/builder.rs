@@ -204,7 +204,7 @@ mod tests {
                 BlockKind::ListItem,
                 [paragraph([
                     text("").capture(&mut empty),
-                    strong([emphasis([text("日😀").capture(&mut word)])]),
+                    strong([emphasis([text("€😀").capture(&mut word)])]),
                 ])],
             )
             .capture(&mut item)],
@@ -224,7 +224,7 @@ mod tests {
         );
         assert_eq!(
             doc.node(word).unwrap().kind(),
-            &NodeKind::Inline(InlineKind::Text("日😀".into()))
+            &NodeKind::Inline(InlineKind::Text("€😀".into()))
         );
         let ids: Vec<_> = doc.nodes().map(|node| node.id()).collect();
         assert_eq!(ids[3], empty);

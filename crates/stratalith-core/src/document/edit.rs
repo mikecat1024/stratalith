@@ -737,7 +737,7 @@ mod tests {
 
     #[test]
     fn apply_edit_records_split_with_resulting_block_ids() {
-        let mut doc = document([paragraph([text("日😀")])]).unwrap();
+        let mut doc = document([paragraph([text("€😀")])]).unwrap();
         let block = doc.blocks()[0];
         let at = BlockPosition {
             block,

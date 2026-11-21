@@ -58,7 +58,7 @@ pub enum Command {
 /// let start = BlockPosition { block: doc.blocks()[0], offset: 0, affinity: Affinity::Downstream };
 /// let mut editor = EditorEngine::new(doc, Selection::caret(start))?;
 ///
-/// editor.execute(Command::InsertText("日本".into()), editor.selection(), None)?;
+/// editor.execute(Command::InsertText("OK".into()), editor.selection(), None)?;
 /// editor.execute(Command::Undo, editor.selection(), None)?;
 /// let selection_after_undo = editor.selection();
 /// editor.execute(Command::Redo, editor.selection(), None)?;
@@ -599,7 +599,7 @@ mod tests {
     #[test]
     fn document_replacement_restores_the_imported_selection_on_redo() {
         let original = document([paragraph([text("old")])]).unwrap();
-        let replacement = document([paragraph([text("新😀")])]).unwrap();
+        let replacement = document([paragraph([text("€😀")])]).unwrap();
         let old_block = original.blocks()[0];
         let before = Selection::caret(block_position(old_block, 2));
         let new_block = replacement.blocks()[0];
@@ -622,7 +622,7 @@ mod tests {
         assert_ne!(imported.anchor.block, old_block);
         assert!(editor.document().node(old_block).is_none());
         let paragraph = editor.document().node(imported.anchor.block).unwrap();
-        assert_text(&editor, paragraph.children()[0], "新😀");
+        assert_text(&editor, paragraph.children()[0], "€😀");
     }
 
     #[test]
@@ -693,7 +693,7 @@ mod tests {
         let mut editor = editor_at(doc, at);
         let now = Some(Duration::ZERO);
         editor
-            .execute(Command::InsertText("日".into()), editor.selection(), now)
+            .execute(Command::InsertText("€".into()), editor.selection(), now)
             .unwrap();
         editor.set_selection(editor.selection()).unwrap();
         editor
@@ -716,7 +716,7 @@ mod tests {
         assert_eq!(before, Selection::caret(at));
         assert_eq!(typed, Selection::caret(BlockPosition { offset: 3, ..at }));
         assert_eq!(editor.selection(), typed);
-        assert_text(&editor, bold_text.unwrap(), "a日😀");
+        assert_text(&editor, bold_text.unwrap(), "a€😀");
     }
 
     #[test]
@@ -784,7 +784,7 @@ mod tests {
     }
 
     #[stratalith_macros::rstest]
-    #[case::backspace(Command::Backspace, "a界", 1)]
+    #[case::backspace(Command::Backspace, "ao", 1)]
     #[case::delete(Command::Delete, "a😀", 2)]
     fn directional_deletion_at_a_caret_removes_one_scalar(
         #[case] command: Command,
@@ -792,7 +792,7 @@ mod tests {
         #[case] offset: usize,
     ) {
         let mut id = None;
-        let doc = document([paragraph([text("a😀界").capture(&mut id)])]).unwrap();
+        let doc = document([paragraph([text("a😀o").capture(&mut id)])]).unwrap();
         let at = block_position(doc.blocks()[0], 2);
         let mut editor = editor_at(doc, at);
 
@@ -810,7 +810,7 @@ mod tests {
     #[case::delete(Command::Delete)]
     fn directional_deletion_removes_the_entire_selection(#[case] command: Command) {
         let mut id = None;
-        let doc = document([paragraph([text("a😀界b").capture(&mut id)])]).unwrap();
+        let doc = document([paragraph([text("a😀ob").capture(&mut id)])]).unwrap();
         let block = doc.blocks()[0];
         let mut editor = EditorEngine::new(
             doc,
@@ -842,8 +842,8 @@ mod tests {
         let doc = document([block(
             BlockKind::BlockQuote,
             [
-                paragraph([text("左").capture(&mut node)]),
-                paragraph([text("右")]),
+                paragraph([text("L").capture(&mut node)]),
+                paragraph([text("R")]),
             ],
         )])
         .unwrap();
@@ -856,7 +856,7 @@ mod tests {
         editor.execute(command, editor.selection(), None).unwrap();
 
         assert_eq!(editor.document.node(parent).unwrap().children(), &[left]);
-        assert_text(&editor, node.unwrap(), "左右");
+        assert_text(&editor, node.unwrap(), "LR");
         assert_eq!(
             editor.selection(),
             Selection::caret(block_position(left, 1))
@@ -1058,7 +1058,7 @@ mod tests {
     fn enter_inside_code_inserts_a_newline_in_the_same_block() {
         let code = BlockKind::CodeBlock {
             language: Some("rs".into()),
-            code: "日😀".into(),
+            code: "€😀".into(),
         };
         let doc = document([block(code, [])]).unwrap();
         let at = block_position(doc.blocks()[0], 1);
@@ -1073,7 +1073,7 @@ mod tests {
             editor.document.node(at.block).unwrap().kind(),
             &NodeKind::Block(BlockKind::CodeBlock {
                 language: Some("rs".into()),
-                code: "日\n😀".into(),
+                code: "€\n😀".into(),
             }),
         );
         assert_eq!(

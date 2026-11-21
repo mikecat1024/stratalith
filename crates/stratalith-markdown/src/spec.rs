@@ -15,7 +15,7 @@ fn tree(doc: &Document) -> Vec<(&NodeKind, usize)> {
 #[case::entities_in_fence_info("~~~&#32;rust&#10;example&#32;\ncode\n~~~")]
 #[case::empty_document("")]
 #[case::empty_heading("##")]
-#[case::heading_with_cjk_and_crlf("###### 日本語 ###\r\n\r\n---")]
+#[case::heading_with_cjk_and_crlf("###### \u{4e00}\u{4e8c}\u{4e09} ###\r\n\r\n---")]
 #[case::nested_emphasis("__Hello *world*__ and ***both*** and **_nested_**")]
 #[case::soft_and_hard_breaks("before\nsecond  \nthird\\\nfourth")]
 #[case::escapes_and_literal_markers(r"\# word \*literal\* \[unclosed and foo_bar_baz")]

@@ -40,7 +40,7 @@ function compose(editor: HTMLElement, value: string) {
     new InputEvent("input", {
       isComposing: true,
       inputType: "insertCompositionText",
-      data: "仮",
+      data: "e",
     }),
   );
   editor.dispatchEvent(new CompositionEvent("compositionend", { data: value }));
@@ -101,9 +101,9 @@ async function replacement(dispatch: (editor: HTMLElement) => void) {
   const before: DocumentSelection = [0, 3, 0, 1, 0];
 
   dispatch(editor);
-  direct.edit(EditCommand.ReplaceRange, before, "日");
+  direct.edit(EditCommand.ReplaceRange, before, "€");
 
-  equal(editor.textContent, "a日c");
+  equal(editor.textContent, "a€c");
   checkHistory(editor, host, direct, before);
 }
 
@@ -233,25 +233,25 @@ async function nonCancelableReplacement() {
 }
 
 async function structuredPaste(dispatch: (editor: HTMLElement, text: string) => void) {
-  const { host, editor } = await fixture((markdown) => insert(markdown, "前😀後"));
+  const { host, editor } = await fixture((markdown) => insert(markdown, "L😀R"));
   const text = nodeAt(editor, "p");
   document.getSelection()?.setBaseAndExtent(text, 3, text, 1);
 
-  dispatch(editor, "## 見出し\n\n- **項目**");
+  dispatch(editor, "## Heading\n\n- **Item**");
 
   equal(
     Array.from(editor.children, (element) => element.tagName),
     ["P", "H2", "UL", "P"],
   );
-  equal(editor.querySelector("h2")?.textContent, "見出し");
-  equal(editor.querySelector("li strong")?.textContent, "項目");
-  equal(editor.firstElementChild?.textContent, "前");
-  equal(editor.lastElementChild?.textContent, "後");
+  equal(editor.querySelector("h2")?.textContent, "Heading");
+  equal(editor.querySelector("li strong")?.textContent, "Item");
+  equal(editor.firstElementChild?.textContent, "L");
+  equal(editor.lastElementChild?.textContent, "R");
   const pasted = host.current();
 
   input(editor, "historyUndo");
 
-  equal(editor.textContent, "前😀後");
+  equal(editor.textContent, "L😀R");
   equal(host.current().selection, [0, 2, 0, 1, 0]);
 
   input(editor, "historyRedo");
@@ -317,9 +317,9 @@ async function run() {
   await structuredPaste((editor, text) => input(editor, "insertFromPaste", text));
   await nonCancelableReplacement();
 
-  await replacement((editor) => input(editor, "insertText", "日"));
-  await replacement((editor) => clipboard(editor, "paste", "日"));
-  await replacement((editor) => compose(editor, "日"));
+  await replacement((editor) => input(editor, "insertText", "€"));
+  await replacement((editor) => clipboard(editor, "paste", "€"));
+  await replacement((editor) => compose(editor, "€"));
   await deletion("deleteWordBackward");
   await deletion("deleteSoftLineBackward");
   await backspace();

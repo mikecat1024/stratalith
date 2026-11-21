@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stratalith Editor</title>
@@ -30,9 +30,9 @@
   #editor [data-tight="true"] > li > p { margin-block: 0; }
 </style>
 <main>
-  <p id="status" role="status">読み込み中…</p>
-  <div id="editor" role="textbox" aria-label="ビジュアルエディター" aria-multiline="true"
-       data-placeholder="ここに入力。# と空白で見出し、**文字** で太字"></div>
+  <p id="status" role="status">Loading…</p>
+  <div id="editor" role="textbox" aria-label="Visual editor" aria-multiline="true"
+       data-placeholder="Start typing. Type # followed by a space for a heading, or **text** for bold."></div>
 </main>
 <script type="module" src="./main.js"></script>
 </html>

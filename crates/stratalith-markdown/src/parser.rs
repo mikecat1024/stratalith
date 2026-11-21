@@ -42,13 +42,13 @@ mod tests {
 
     #[test]
     fn parses_nested_block_and_inline_kinds() {
-        let source = "## 見出し\n\n3. [**赤 *青***](book \"本\")\n   - `白`\n4. 次";
+        let source = "## Heading\n\n3. [**red *blue***](book \"Book\")\n   - `white`\n4. next";
         let link = inline(
             InlineKind::Link {
                 url: "book".into(),
-                title: Some("本".into()),
+                title: Some("Book".into()),
             },
-            [strong([text("赤 "), emphasis([text("青")])])],
+            [strong([text("red "), emphasis([text("blue")])])],
         );
         let nested_list = block(
             BlockKind::List {
@@ -57,7 +57,7 @@ mod tests {
             },
             [block(
                 BlockKind::ListItem,
-                [paragraph([inline(InlineKind::Code("白".into()), [])])],
+                [paragraph([inline(InlineKind::Code("white".into()), [])])],
             )],
         );
         let expected_doc = document([
@@ -65,7 +65,7 @@ mod tests {
                 BlockKind::Heading {
                     level: HeadingLevel::H2,
                 },
-                [text("見出し")],
+                [text("Heading")],
             ),
             block(
                 BlockKind::List {
@@ -74,7 +74,7 @@ mod tests {
                 },
                 [
                     block(BlockKind::ListItem, [paragraph([link]), nested_list]),
-                    block(BlockKind::ListItem, [paragraph([text("次")])]),
+                    block(BlockKind::ListItem, [paragraph([text("next")])]),
                 ],
             ),
         ])

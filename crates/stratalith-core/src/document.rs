@@ -322,7 +322,7 @@ mod tests {
     fn nested_document() -> Document {
         build_document([
             paragraph([strong([text("Hello "), emphasis([text("world")])])]),
-            paragraph([text("次の段落")]),
+            paragraph([text("Next paragraph")]),
         ])
         .unwrap()
     }
@@ -379,7 +379,7 @@ mod tests {
                 NodeKind::Inline(InlineKind::Emphasis),
                 NodeKind::Inline(InlineKind::Text("world".into())),
                 NodeKind::Block(BlockKind::Paragraph),
-                NodeKind::Inline(InlineKind::Text("次の段落".into())),
+                NodeKind::Inline(InlineKind::Text("Next paragraph".into())),
             ]
         );
         assert_tree_integrity(&document);
@@ -588,11 +588,10 @@ mod tests {
 
         let document = build_document([text_block(
             heading.clone(),
-            [inline(
-                link_kind.clone(),
-                [text("こんにちは🦀").capture(&mut content)],
-            )
-            .capture(&mut link)],
+            [
+                inline(link_kind.clone(), [text("Hello🦀").capture(&mut content)])
+                    .capture(&mut link),
+            ],
         )])
         .unwrap();
 
@@ -606,7 +605,7 @@ mod tests {
         );
         assert_eq!(
             document.node(content.unwrap()).unwrap().kind(),
-            &NodeKind::Inline(InlineKind::Text("こんにちは🦀".into()))
+            &NodeKind::Inline(InlineKind::Text("Hello🦀".into()))
         );
         assert_tree_integrity(&document);
     }
@@ -1003,7 +1002,7 @@ mod tests {
             title: Some("Title".into()),
         };
         let formatted_description =
-            emphasis([text("説明").capture(&mut description)]).capture(&mut formatted);
+            emphasis([text("Description").capture(&mut description)]).capture(&mut formatted);
 
         let document = build_document([paragraph([inline(
             link_kind,

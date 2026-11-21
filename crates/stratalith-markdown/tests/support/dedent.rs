@@ -29,7 +29,7 @@ mod tests {
     use stratalith_macros::rstest;
 
     #[rstest]
-    #[case("\n    - 親\n      - 子\n    ", "- 親\n  - 子\n")]
+    #[case("\n    - Parent\n      - Child\n    ", "- Parent\n  - Child\n")]
     #[case("\n    one  \n    \n    two", "one  \n\ntwo")]
     #[case("    indented code\n", "    indented code\n")]
     fn dedent_preserves_markdown_whitespace(#[case] input: &str, #[case] expected: &str) {

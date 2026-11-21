@@ -209,7 +209,7 @@ mod tests {
         #[case] prefix_length: usize,
         #[case] expected: bool,
     ) {
-        let source = format!(r"[{}\]]", "界".repeat(prefix_length));
+        let source = format!(r"[{}\]]", "€".repeat(prefix_length));
 
         let label = ReferenceLabel::bracketed(&source);
 
@@ -223,7 +223,7 @@ mod tests {
         #[case] prefix_length: usize,
         #[case] expected: bool,
     ) {
-        let source = format!(r"{}\]", "界".repeat(prefix_length));
+        let source = format!(r"{}\]", "€".repeat(prefix_length));
 
         let label = ReferenceLabel::whole(&source);
 
