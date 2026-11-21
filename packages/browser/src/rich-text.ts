@@ -216,9 +216,12 @@ function caretPoint(block: RenderedBlock, offset: number, upstream: boolean): Po
     }
     if (node instanceof Text) {
       const prefix = inlineBoundaryLength(node);
-      const units = Array.from(node.data.slice(prefix))
-        .slice(0, offset - span.start)
-        .join("").length;
+      const scalarOffset = offset - span.start;
+      // Equal UTF-16 and scalar lengths mean every scalar occupies one code unit.
+      let units = scalarOffset;
+      if (node.length - prefix !== span.end - span.start) {
+        units = Array.from(node.data.slice(prefix)).slice(0, scalarOffset).join("").length;
+      }
       last = [node, prefix + units];
       if (offset < span.end || upstream || prefix) {
         return last;

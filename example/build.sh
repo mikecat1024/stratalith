@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 cd "$(dirname "$0")/.."
-cargo build --locked --release --target wasm32-unknown-unknown -p stratalith-wasm
+cargo build --locked --profile wasm-release --target wasm32-unknown-unknown -p stratalith-wasm
 mkdir -p target/example
 case "${1:-}" in
     --test)
@@ -23,4 +23,4 @@ node --input-type=module -e '
     }
 ' packages/browser/src/*.ts example/main.ts "$@"
 cp example/index.html target/example/
-cp target/wasm32-unknown-unknown/release/stratalith_wasm.wasm target/example/stratalith.wasm
+cp target/wasm32-unknown-unknown/wasm-release/stratalith_wasm.wasm target/example/stratalith.wasm

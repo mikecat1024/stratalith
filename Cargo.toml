@@ -10,3 +10,10 @@ license = "MIT"
 stratalith-core = { path = "crates/stratalith-core" }
 stratalith-macros = { path = "crates/stratalith-macros" }
 stratalith-markdown = { path = "crates/stratalith-markdown" }
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = "symbols"
