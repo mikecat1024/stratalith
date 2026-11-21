@@ -225,6 +225,21 @@ impl Document {
             .ok_or(EditError::CannotMoveListItem(item))?;
         let nested = self.nested_list(previous, list);
         self.move_item(item, list, nested, self.live(nested).children.len());
+        if let Some(index) = self.live(item).children.iter().position(|&child| {
+            matches!(
+                self.live(child).kind,
+                NodeKind::Block(BlockKind::List { .. })
+            )
+        }) {
+            let child_list = self.live(item).children[index];
+            // Keep the child list and everything after it at their original depth.
+            self.move_suffix(item, index, previous);
+            if self.live(child_list).kind == self.live(nested).kind {
+                self.move_suffix(child_list, 0, nested);
+                self.remove_node(child_list)
+                    .expect("the empty list is live");
+            }
+        }
         Ok(())
     }
 

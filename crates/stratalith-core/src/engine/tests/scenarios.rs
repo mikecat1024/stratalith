@@ -2505,6 +2505,245 @@ fn web_link<'a>(
         .at(&[0, 0, 1, 0, 0], 2),
     )],
 )]
+#[case::indent_bullet_item_keeps_child_and_following_sibling_at_their_depths(
+    // ```markdown
+    // - before
+    // - ta$$rget
+    //   - child
+    // - after
+    // ```
+    Scenario::new([block(
+        BlockKind::List {
+            kind: ListKind::Bullet,
+            tight: true,
+        },
+        [
+            block(BlockKind::ListItem, [paragraph([text("before")])]),
+            block(
+                BlockKind::ListItem,
+                [
+                    paragraph([text("target")]),
+                    block(
+                        BlockKind::List {
+                            kind: ListKind::Bullet,
+                            tight: true,
+                        },
+                        [block(BlockKind::ListItem, [paragraph([text("child")])])],
+                    ),
+                ],
+            ),
+            block(BlockKind::ListItem, [paragraph([text("after")])]),
+        ],
+    )])
+    .at(&[0, 1, 0], 2),
+    [(
+        Command::IndentListItem,
+        // ```markdown
+        // - before
+        //   - ta$$rget
+        //   - child
+        // - after
+        // ```
+        Scenario::new([block(
+            BlockKind::List {
+                kind: ListKind::Bullet,
+                tight: true,
+            },
+            [
+                block(
+                    BlockKind::ListItem,
+                    [
+                        paragraph([text("before")]),
+                        block(
+                            BlockKind::List {
+                                kind: ListKind::Bullet,
+                                tight: true,
+                            },
+                            [
+                                block(BlockKind::ListItem, [paragraph([text("target")])]),
+                                block(BlockKind::ListItem, [paragraph([text("child")])]),
+                            ],
+                        ),
+                    ],
+                ),
+                block(BlockKind::ListItem, [paragraph([text("after")])]),
+            ],
+        )])
+        .at(&[0, 0, 1, 0, 0], 2),
+    )],
+)]
+#[case::indent_middle_bullet_leaves_following_sibling_at_top_level(
+    // ```markdown
+    // - before
+    // - ta$$rget
+    // - after
+    // ```
+    Scenario::new([block(
+        BlockKind::List {
+            kind: ListKind::Bullet,
+            tight: true,
+        },
+        [
+            block(BlockKind::ListItem, [paragraph([text("before")])]),
+            block(BlockKind::ListItem, [paragraph([text("target")])]),
+            block(BlockKind::ListItem, [paragraph([text("after")])]),
+        ],
+    )])
+    .at(&[0, 1, 0], 2),
+    [(
+        Command::IndentListItem,
+        // ```markdown
+        // - before
+        //   - ta$$rget
+        // - after
+        // ```
+        Scenario::new([block(
+            BlockKind::List {
+                kind: ListKind::Bullet,
+                tight: true,
+            },
+            [
+                block(
+                    BlockKind::ListItem,
+                    [
+                        paragraph([text("before")]),
+                        block(
+                            BlockKind::List {
+                                kind: ListKind::Bullet,
+                                tight: true,
+                            },
+                            [block(BlockKind::ListItem, [paragraph([text("target")])])],
+                        ),
+                    ],
+                ),
+                block(BlockKind::ListItem, [paragraph([text("after")])]),
+            ],
+        )])
+        .at(&[0, 0, 1, 0, 0], 2),
+    )],
+)]
+#[case::indent_first_nested_bullet_keeps_its_depth(
+    // ```markdown
+    // - before
+    //   - ta$$rget
+    // - after
+    // ```
+    Scenario::new([block(
+        BlockKind::List {
+            kind: ListKind::Bullet,
+            tight: true,
+        },
+        [
+            block(
+                BlockKind::ListItem,
+                [
+                    paragraph([text("before")]),
+                    block(
+                        BlockKind::List {
+                            kind: ListKind::Bullet,
+                            tight: true,
+                        },
+                        [block(BlockKind::ListItem, [paragraph([text("target")])])],
+                    ),
+                ],
+            ),
+            block(BlockKind::ListItem, [paragraph([text("after")])]),
+        ],
+    )])
+    .at(&[0, 0, 1, 0, 0], 2),
+    [(
+        Command::IndentListItem,
+        // ```markdown
+        // - before
+        //   - ta$$rget
+        // - after
+        // ```
+        Scenario::new([block(
+            BlockKind::List {
+                kind: ListKind::Bullet,
+                tight: true,
+            },
+            [
+                block(
+                    BlockKind::ListItem,
+                    [
+                        paragraph([text("before")]),
+                        block(
+                            BlockKind::List {
+                                kind: ListKind::Bullet,
+                                tight: true,
+                            },
+                            [block(BlockKind::ListItem, [paragraph([text("target")])])],
+                        ),
+                    ],
+                ),
+                block(BlockKind::ListItem, [paragraph([text("after")])]),
+            ],
+        )])
+        .at(&[0, 0, 1, 0, 0], 2),
+    )],
+)]
+#[case::outdent_first_nested_bullet_keeps_following_bullet_at_its_depth(
+    // ```markdown
+    // - before
+    //   - ta$$rget
+    //   - after
+    // ```
+    Scenario::new([block(
+        BlockKind::List {
+            kind: ListKind::Bullet,
+            tight: true,
+        },
+        [block(
+        BlockKind::ListItem,
+        [
+            paragraph([text("before")]),
+            block(
+                BlockKind::List {
+                    kind: ListKind::Bullet,
+                    tight: true,
+                },
+                [
+                    block(BlockKind::ListItem, [paragraph([text("target")])]),
+                    block(BlockKind::ListItem, [paragraph([text("after")])]),
+                ],
+            ),
+        ],
+    )],
+    )])
+    .at(&[0, 0, 1, 0, 0], 2),
+    [(
+        Command::OutdentListItem,
+        // ```markdown
+        // - before
+        // - ta$$rget
+        //   - after
+        // ```
+        Scenario::new([block(
+            BlockKind::List {
+                kind: ListKind::Bullet,
+                tight: true,
+            },
+            [
+                block(BlockKind::ListItem, [paragraph([text("before")])]),
+                block(
+                    BlockKind::ListItem,
+                    [
+                        paragraph([text("target")]),
+                        block(
+                            BlockKind::List {
+                                kind: ListKind::Bullet,
+                                tight: true,
+                            },
+                            [block(BlockKind::ListItem, [paragraph([text("after")])])],
+                        ),
+                    ],
+                ),
+            ],
+        )])
+        .at(&[0, 1, 0], 2),
+    )],
+)]
 #[case::outdent_numbered_item_promotes_one_level(
     // ```markdown
     // 1. parent
