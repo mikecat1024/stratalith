@@ -1,5 +1,5 @@
-import { attachEditor } from "../editor.js";
-import { EditCommand, loadMarkdown } from "../markdown.js";
+import { attachEditor } from "../../packages/browser/src/editor.js";
+import { EditCommand, loadMarkdown } from "../../packages/browser/src/markdown.js";
 
 interface Trace {
   startContent: string;
@@ -42,14 +42,15 @@ async function replay() {
     }
   }
 
-  const markdown = await loadMarkdown();
+  const markdown = await loadMarkdown("./stratalith.wasm");
   const prefix = "Benchmark paragraph.\n\n".repeat(paragraphs);
   markdown.edit(
     EditCommand.Paste,
     markdown.current().selection,
     prefix + "~~~\nseed\n~~~",
   );
-  attachEditor(editor, status, markdown);
+  attachEditor(editor, markdown, reportError);
+  status.hidden = true;
   const replace = (pos: number, removed: number, inserted: string) => {
     const block = editor.querySelector("pre");
     if (!block) {

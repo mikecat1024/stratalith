@@ -6,5 +6,5 @@
     "strict": true,
     "noEmit": true
   },
-  "files": ["main.ts", "editor.ts", "markdown.ts", "rich-text.ts", "test/contracts.ts"]
+  "files": ["main.ts", "bench/replay.ts", "test/contracts.ts"]
 }

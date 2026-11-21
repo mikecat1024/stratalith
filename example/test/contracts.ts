@@ -1,6 +1,11 @@
-import { attachEditor } from "../editor.js";
-import { type DocumentSelection, EditCommand, loadMarkdown } from "../markdown.js";
-import { renderEditableDocument } from "../rich-text.js";
+import { mountEditor } from "../../packages/browser/src/index.js";
+import { attachEditor } from "../../packages/browser/src/editor.js";
+import {
+  type DocumentSelection,
+  EditCommand,
+  loadMarkdown,
+} from "../../packages/browser/src/markdown.js";
+import { renderEditableDocument } from "../../packages/browser/src/rich-text.js";
 
 type Markdown = Awaited<ReturnType<typeof loadMarkdown>>;
 type State = ReturnType<Markdown["current"]>;
@@ -52,13 +57,15 @@ function insert(markdown: Markdown, text: string) {
 }
 
 async function fixture(seed: (markdown: Markdown) => void) {
-  const [host, direct] = await Promise.all([loadMarkdown(), loadMarkdown()]);
+  const [host, direct] = await Promise.all([
+    loadMarkdown("./stratalith.wasm"),
+    loadMarkdown("./stratalith.wasm"),
+  ]);
   seed(host);
   seed(direct);
   const editor = document.createElement("div");
-  const status = document.createElement("p");
-  document.body.replaceChildren(editor, status);
-  attachEditor(editor, status, host);
+  document.body.replaceChildren(editor);
+  attachEditor(editor, host, reportError);
   return { host, direct, editor };
 }
 
@@ -308,7 +315,37 @@ async function formattedCut() {
   equal(editor.querySelector("strong")?.textContent, "bold");
 }
 
+async function destroyDetachesInput() {
+  const element = document.createElement("div");
+  element.contentEditable = "false";
+  document.body.replaceChildren(element);
+  const editor = await mountEditor(element, { wasmUrl: "./stratalith.wasm" });
+
+  editor.destroy();
+  input(element, "insertText", "x");
+
+  equal(element.contentEditable, "false");
+  equal(element.textContent, "");
+}
+
+async function remountAcceptsInput() {
+  const element = document.createElement("div");
+  document.body.replaceChildren(element);
+  const options = { wasmUrl: "./stratalith.wasm" };
+  const first = await mountEditor(element, options);
+  first.destroy();
+
+  const second = await mountEditor(element, options);
+  first.destroy();
+  input(element, "insertText", "x");
+
+  equal(element.textContent, "x");
+  second.destroy();
+}
+
 async function run() {
+  await destroyDetachesInput();
+  await remountAcceptsInput();
   await emojiDeletion("deleteContentBackward", 5);
   await emojiDeletion("deleteContentForward", 1);
   await emojiDeletion("deleteContentBackward", 5, () => []);

@@ -17,10 +17,10 @@ jobs:
         with:
           node-version: 24
       - run: rustup target add wasm32-unknown-unknown
-      - run: ./web/build.sh
+      - run: ./example/build.sh
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: target/web
+          path: target/example
 
   deploy:
     needs: build

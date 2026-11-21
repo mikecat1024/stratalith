@@ -191,8 +191,8 @@ function readEditorState(output: Uint8Array) {
   return { nodes: new TreeReader(output.subarray(20)).nodes(), selection };
 }
 
-export async function loadMarkdown() {
-  const response = await fetch("./stratalith.wasm");
+export async function loadMarkdown(wasmUrl: string | URL) {
+  const response = await fetch(wasmUrl);
   if (!response.ok) {
     throw new Error(response.statusText);
   }

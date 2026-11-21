@@ -179,8 +179,8 @@ function shortcut(event: KeyboardEvent) {
 
 export function attachEditor(
   editor: HTMLElement,
-  status: HTMLElement,
   markdown: Markdown,
+  showError: (error: unknown) => void,
 ) {
   type State = ReturnType<Markdown["current"]>;
   let read: ReadSelection;
@@ -197,17 +197,18 @@ export function attachEditor(
   const selectionNow = () => read(document.getSelection()) ?? renderedSelection;
   const restoreAt = (selection: DocumentSelection) =>
     restore({ ...markdown.current(), selection });
-  const showError = (error: unknown) => {
-    status.replaceChildren(String(error));
-    status.removeAttribute("hidden");
-  };
+  const listeners = new AbortController();
+  const listen = <EventName extends keyof HTMLElementEventMap>(
+    type: EventName,
+    listener: (event: HTMLElementEventMap[EventName]) => void,
+  ) => editor.addEventListener(type, listener, { signal: listeners.signal });
+  const previousEditable = editor.getAttribute("contenteditable");
   const edit = (...args: InputEdit) => {
     try {
       const result = markdown.edit(...args);
       if (result) {
         restore(result);
       }
-      status.setAttribute("hidden", "");
       return Boolean(result);
     } catch (error) {
       showError(error);
@@ -238,7 +239,7 @@ export function attachEditor(
     return edit(...operation);
   };
 
-  editor.addEventListener("beforeinput", (event) => {
+  listen("beforeinput", (event) => {
     if (composition || event.isComposing) {
       const [range] = event.getTargetRanges();
       if (composition && !composition.target && range) {
@@ -256,7 +257,7 @@ export function attachEditor(
       pending = { edit: operation, before };
     }
   });
-  editor.addEventListener("input", (event) => {
+  listen("input", (event) => {
     if (!(event instanceof InputEvent)) {
       return;
     }
@@ -275,11 +276,11 @@ export function attachEditor(
       restoreAt(before);
     }
   });
-  editor.addEventListener("compositionstart", () => {
+  listen("compositionstart", () => {
     composition = { before: selectionNow() };
     pending = undefined;
   });
-  editor.addEventListener("compositionend", (event) => {
+  listen("compositionend", (event) => {
     const current = composition;
     composition = undefined;
     if (
@@ -296,7 +297,7 @@ export function attachEditor(
       restoreAt(current.before);
     }
   });
-  editor.addEventListener("keydown", (event) => {
+  listen("keydown", (event) => {
     if (composition || event.isComposing || event.altKey) {
       return;
     }
@@ -331,23 +332,39 @@ export function attachEditor(
       showError(error);
     }
   };
-  editor.addEventListener("copy", writeSelection);
-  editor.addEventListener("cut", writeSelection);
-  editor.addEventListener("paste", (event) => {
+  listen("copy", writeSelection);
+  listen("cut", writeSelection);
+  listen("paste", (event) => {
     event.preventDefault();
     const text = pasteText(event.clipboardData);
     if (text) {
       edit(EditCommand.Paste, selectionNow(), text);
     }
   });
-  editor.addEventListener("drop", (event) => event.preventDefault());
-  editor.addEventListener("click", (event) => {
+  listen("drop", (event) => event.preventDefault());
+  listen("click", (event) => {
     if (event.target instanceof Element && event.target.closest("a")) {
       event.preventDefault();
     }
   });
   editor.setAttribute("contenteditable", "true");
   editor.focus();
-  restore(markdown.current());
-  status.setAttribute("hidden", "");
+  const destroy = () => {
+    if (listeners.signal.aborted) {
+      return;
+    }
+    listeners.abort();
+    if (previousEditable === null) {
+      editor.removeAttribute("contenteditable");
+    } else {
+      editor.setAttribute("contenteditable", previousEditable);
+    }
+  };
+  try {
+    restore(markdown.current());
+  } catch (error) {
+    destroy();
+    throw error;
+  }
+  return { destroy };
 }
