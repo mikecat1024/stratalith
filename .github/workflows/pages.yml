@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/pages.yml'
+      - 'Taskfile.yml'
       - 'example/web/**'
       - '!example/web/test/**'
       - '!example/web/tsconfig.json'
@@ -30,7 +31,8 @@ jobs:
         with:
           node-version: 24
       - run: rustup target add wasm32-unknown-unknown
-      - run: ./example/web/build.sh
+      - uses: arduino/setup-task@v3
+      - run: task web:build
       - uses: actions/upload-pages-artifact@v5
         with:
           path: target/example
