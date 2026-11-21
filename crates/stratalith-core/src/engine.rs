@@ -24,6 +24,7 @@ pub enum Command {
     },
     /// Deletes the selection or the preceding unit of [`BlockPosition`].
     /// At a block boundary, unwraps a list item or joins adjacent inline content.
+    /// If the document contains only an empty heading, replaces it with an empty paragraph.
     Backspace,
     /// Deletes the selection or the following unit of [`BlockPosition`].
     /// At a block boundary, joins adjacent inline content in document order.
@@ -467,7 +468,7 @@ impl EditorEngine {
         let (at, collapsed) = self.selected_start(selection)?;
         if collapsed
             && matches!(direction, Direction::Backward)
-            && let Some((document, caret)) = self.document.exit_item_on_backspace(at)
+            && let Some((document, caret)) = self.document.exit_block_on_backspace(at)
         {
             self.commit(document, selection, Selection::caret(caret), None);
             return Ok(true);

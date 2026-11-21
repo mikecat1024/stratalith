@@ -2878,6 +2878,35 @@ fn web_link<'a>(
         .at(&[1], 0),
     )],
 )]
+#[case::enter_on_empty_heading_turns_it_into_a_paragraph(
+    Scenario::new([
+        text_block(
+            BlockKind::Heading {
+                level: HeadingLevel::H1,
+            },
+            [],
+        ),
+        paragraph([text("after")]),
+    ])
+    .at(&[0], 0),
+    [(
+        Command::Enter,
+        Scenario::new([paragraph([]), paragraph([text("after")])]).at(&[0], 0),
+    )],
+)]
+#[case::backspace_on_only_empty_heading_leaves_empty_paragraph(
+    Scenario::new([text_block(
+        BlockKind::Heading {
+            level: HeadingLevel::H1,
+        },
+        [],
+    )])
+    .at(&[0], 0),
+    [(
+        Command::Backspace,
+        Scenario::new([paragraph([])]).at(&[0], 0),
+    )],
+)]
 #[case::backspace_at_heading_start_joins_previous_plain_paragraph(
     // ```markdown
     // before

@@ -103,7 +103,11 @@ impl Document {
                 NodeKind::Block(BlockKind::Heading { .. })
             )
         {
-            self.sibling_block(block, false, BlockKind::Paragraph);
+            if empty {
+                self.live_mut(block).kind = NodeKind::Block(BlockKind::Paragraph);
+            } else {
+                self.sibling_block(block, false, BlockKind::Paragraph);
+            }
             block
         } else {
             self.split_paragraph(block, point)
@@ -157,7 +161,7 @@ impl Document {
         })
     }
 
-    pub(crate) fn exit_item_on_backspace(
+    pub(crate) fn exit_block_on_backspace(
         &self,
         at: BlockPosition,
     ) -> Option<(Self, BlockPosition)> {
@@ -165,6 +169,25 @@ impl Document {
             return None;
         }
         let block = at.block;
+        if self.blocks() == [block]
+            && matches!(
+                self.live(block).kind,
+                NodeKind::Block(BlockKind::Heading { .. })
+            )
+            && self.block_len(block) == 0
+        {
+            let mut document = self.edit_snapshot();
+            let paragraph = document.sibling_block(block, false, BlockKind::Paragraph);
+            document.remove_node(block).unwrap();
+            return Some((
+                document,
+                BlockPosition {
+                    block: paragraph,
+                    offset: 0,
+                    affinity: Affinity::Downstream,
+                },
+            ));
+        }
         let item = self.item_of(block)?;
         let list = self.live(item).parent?;
         if !matches!(self.live(block).kind, NodeKind::Block(BlockKind::Paragraph))
