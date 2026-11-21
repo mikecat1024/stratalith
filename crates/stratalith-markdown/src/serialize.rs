@@ -216,7 +216,7 @@ mod tests {
         assert!(matches!(result, Err(MarkdownError::Unrepresentable(_))));
     }
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::ordered_list_marker_and_cjk("1. \u{4e00}\u{4e8c}")]
     #[case::leading_spaces("  leading")]
     #[case::trailing_spaces("trailing  ")]

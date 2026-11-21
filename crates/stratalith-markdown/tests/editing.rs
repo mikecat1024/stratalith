@@ -5,10 +5,10 @@ mod marked_markdown;
 
 use dedent::dedent;
 use stratalith_core::{Command, Document, EditorEngine, Selection};
-use stratalith_macros::rstest;
+use stratalith_macros::stratest;
 use stratalith_markdown::{parse, serialize};
 
-#[rstest]
+#[stratest]
 #[case::restore_list(
     "
         - **one**
@@ -36,7 +36,7 @@ fn restore(#[case] input: &str, #[case] expected: &str) {
 
 // In editing cases, $$ is the caret, [| is the anchor, and |] is the focus.
 // Expected output markers also check the selection after each command.
-#[rstest]
+#[stratest]
 #[case::insert_in_quoted_heading(
     "> # €😀$$t",
     vec![(

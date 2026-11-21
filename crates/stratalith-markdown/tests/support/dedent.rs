@@ -26,9 +26,9 @@ pub(super) fn dedent(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::dedent;
-    use stratalith_macros::rstest;
+    use stratalith_macros::stratest;
 
-    #[rstest]
+    #[stratest]
     #[case("\n    - Parent\n      - Child\n    ", "- Parent\n  - Child\n")]
     #[case("\n    one  \n    \n    two", "one  \n\ntwo")]
     #[case("    indented code\n", "    indented code\n")]

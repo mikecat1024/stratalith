@@ -784,7 +784,7 @@ mod tests {
         assert_eq!(editor.selection(), selection);
     }
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::backspace(Command::Backspace, "ao", 1)]
     #[case::delete(Command::Delete, "a😀", 2)]
     fn directional_deletion_at_a_caret_removes_one_scalar(
@@ -806,7 +806,7 @@ mod tests {
         );
     }
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::backspace(Command::Backspace)]
     #[case::delete(Command::Delete)]
     fn directional_deletion_removes_the_entire_selection(#[case] command: Command) {
@@ -831,7 +831,7 @@ mod tests {
         );
     }
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::backspace(Command::Backspace, 1, 0)]
     #[case::delete(Command::Delete, 0, 1)]
     fn directional_deletion_joins_sibling_paragraphs_at_the_boundary(
@@ -924,7 +924,7 @@ mod tests {
         assert_ne!(editor.selection().focus.block, abandoned.block);
     }
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::backspace_at_document_start(Command::Backspace)]
     #[case::delete_at_document_end(Command::Delete)]
     #[case::empty_insertion(Command::InsertText(String::new()))]

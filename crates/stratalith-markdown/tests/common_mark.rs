@@ -17,7 +17,7 @@ fn tree(doc: &Document) -> Vec<(&NodeKind, usize)> {
 
 macro_rules! common_mark_examples {
     ($($name:ident($source:literal, $html:literal)),+ $(,)?) => {
-        #[stratalith_macros::rstest]
+        #[stratalith_macros::stratest]
         $(#[case::$name($source, $html)])+
         fn parse_html(#[case] source: &str, #[case] expected: &str) {
             let doc = parse(source).unwrap();
@@ -27,7 +27,7 @@ macro_rules! common_mark_examples {
             assert_eq!(actual, expected, "{source:?}");
         }
 
-        #[stratalith_macros::rstest]
+        #[stratalith_macros::stratest]
         $(#[case::$name($source)])+
         fn round_trip(#[case] source: &str) {
             let doc = parse(source).unwrap();

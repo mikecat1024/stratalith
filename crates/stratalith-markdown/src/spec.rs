@@ -9,7 +9,7 @@ fn tree(doc: &Document) -> Vec<(&NodeKind, usize)> {
         .collect()
 }
 
-#[stratalith_macros::rstest]
+#[stratalith_macros::stratest]
 #[case::entity_whitespace_in_emphasis("*&nbsp;word&nbsp;*")]
 #[case::line_endings_in_link("[label](<a&#10;b> \"title&#13;\")")]
 #[case::entities_in_fence_info("~~~&#32;rust&#10;example&#32;\ncode\n~~~")]

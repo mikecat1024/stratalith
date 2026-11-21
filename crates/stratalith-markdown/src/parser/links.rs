@@ -202,7 +202,7 @@ fn end_line(s: &str) -> Option<&str> {
 mod tests {
     use super::*;
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::at_limit(997, true)]
     #[case::over_limit(998, false)]
     fn bracketed_label_length_counts_unicode_scalars_and_both_escape_characters(
@@ -216,7 +216,7 @@ mod tests {
         assert_eq!(label.is_some(), expected);
     }
 
-    #[stratalith_macros::rstest]
+    #[stratalith_macros::stratest]
     #[case::at_limit(997, true)]
     #[case::over_limit(998, false)]
     fn shortcut_label_length_counts_unicode_scalars_and_both_escape_characters(

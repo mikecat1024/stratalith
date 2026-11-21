@@ -4,9 +4,9 @@ use proc_macro::{Delimiter, Group, Ident, TokenStream, TokenTree};
 /// on a synchronous test function. Case arguments are ordinary Rust expressions.
 ///
 /// ```
-/// use stratalith_macros::rstest;
+/// use stratalith_macros::stratest;
 ///
-/// #[rstest]
+/// #[stratest]
 /// #[case::empty("", 0)]
 /// #[case::unicode("aé", 2)]
 /// fn character_count(#[case] text: &str, #[case] expected: usize) {
@@ -16,9 +16,9 @@ use proc_macro::{Delimiter, Group, Ident, TokenStream, TokenTree};
 /// }
 /// ```
 #[proc_macro_attribute]
-pub fn rstest(options: TokenStream, item: TokenStream) -> TokenStream {
+pub fn stratest(options: TokenStream, item: TokenStream) -> TokenStream {
     if !options.is_empty() {
-        return compile_error("#[rstest] takes no arguments");
+        return compile_error("#[stratest] takes no arguments");
     }
     expand(item).unwrap_or_else(compile_error)
 }
@@ -96,7 +96,7 @@ fn expand(item: TokenStream) -> Result<TokenStream, &'static str> {
         cases.push(Case::parse(attribute)?);
     }
     if cases.is_empty() {
-        return Err("#[rstest] requires at least one case");
+        return Err("#[stratest] requires at least one case");
     }
 
     let Some(keyword) = tokens.next().filter(|token| is_ident(token, "fn")) else {

@@ -177,7 +177,7 @@ fn web_link<'a>(
 }
 
 // In Markdown examples, $$ is the caret, [| is the anchor, and |] is the focus.
-#[stratalith_macros::rstest]
+#[stratalith_macros::stratest]
 #[case::backspace_converts_empty_nested_ordered_item_to_paragraph_in_parent_item(
     // ```markdown
     // 1. Hello
