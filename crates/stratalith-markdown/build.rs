@@ -24,6 +24,9 @@ const INLINE_PARTS: &[(&str, &str)] = &[
 fn main() {
     println!("cargo::rerun-if-changed=build.rs");
     let mut tests = String::from("mod adjacent_inlines {\n");
+    // Both neighbors can affect how Markdown parses a fragment. For example,
+    // rewriting word*a*word as word_a_word would lose the emphasis. Each ordered
+    // triple checks that serializing and reparsing preserves the original parse tree.
     for &(first_name, first) in INLINE_PARTS {
         for &(middle_name, middle) in INLINE_PARTS {
             for &(last_name, last) in INLINE_PARTS {
