@@ -1,0 +1,12 @@
+[package]
+name = "stratalith-gpui-example"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+gpui = { version = "0.2.2", features = ["runtime_shaders"] }
+stratalith-core = { path = "../../crates/stratalith-core" }
+stratalith-markdown = { path = "../../crates/stratalith-markdown" }

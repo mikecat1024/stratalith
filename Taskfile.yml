@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  gpui:run:
+    desc: Run the native GPUI Markdown editor
+    cmds:
+      - cargo run --locked --manifest-path example/gpui/Cargo.toml
